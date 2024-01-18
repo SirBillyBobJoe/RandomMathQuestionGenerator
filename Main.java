@@ -11,64 +11,89 @@ import Operators.Subtraction;
 import Levels.Level;
 
 public class Main {
-    public  static void main(String[] args){
-        Level level;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        Scanner scanner=new Scanner(System.in);
+        Level level = askForLevel(scanner);
 
-        System.out.println("What Level would you like: Easy, Medium, Hard");
-        String input=scanner.nextLine();
-        input=input.toLowerCase();
-
-        if(input.charAt(0)==('e')){
-            level=new Easy();
-        }else if(input.charAt(0)==('m')){
-            level=new Medium();
-        }else{
-            level=new Hard();
+        int num1 = level.generateRandomNumber();
+        int num2 = level.generateRandomNumber();
+        while (num2 > num1) {
+            num2 = level.generateRandomNumber();
         }
 
-        int num1=level.generateRandomNumber();
+        Operator operator = askForOperator(scanner, num1, num2);
 
-        int num2=level.generateRandomNumber();
-
-        while(num2>num1){
-            num2=level.generateRandomNumber();
-        }
-
-        System.out.println("What arithmetic would you like: Addition, Subtraction, Multiplication, Division");
-        input=scanner.nextLine();
-        input=input.toLowerCase();
-        
-        Operator operator;
-        if(input.charAt(0)==('a')){
-            operator=new Addition(num1,num2);
-        }else if(input.charAt(0)==('s')){
-            operator=new Subtraction(num1,num2);
-        }else if(input.charAt(0)==('m')){
-            operator=new Multiplication(num1,num2);
-        }else{
-            operator=new Division(num1,num2);
-        }
-
-        int answer=operator.answer();
-
-        if(operator instanceof Division){
-            answer=num1;
-            num1=num1*num2;
-        }
-
-        System.out.println("What is "+num1+" "+operator.toString()+" "+num2+"?");
-
-        int answerInput=scanner.nextInt();
-
-        if(answerInput==answer){
-            System.out.println("Correct!");
-        }else{
-            System.out.println("Incorect!");
-            System.out.println("Answer is "+answer);
-        }
+        askQuestion(scanner, operator, num1, num2);
 
         scanner.close();
+    }
+
+    public static Level askForLevel(Scanner scanner) {
+
+        System.out.println("What Level would you like: Easy, Medium, Hard");
+        String input = scanner.nextLine();
+        while (input.isEmpty()) {
+            System.out.println("Please Input a Level");
+            input = scanner.nextLine();
+        }
+
+        input = input.toLowerCase();
+
+        if (input.charAt(0) == ('e')) {
+            return new Easy();
+        } else if (input.charAt(0) == ('m')) {
+            return new Medium();
+        } else {
+            return new Hard();
+        }
+
+    }
+
+    public static Operator askForOperator(Scanner scanner, int num1, int num2) {
+        System.out.println("What Operator would you like: Addition, Subtraction, Multiplication, Division");
+        String input = scanner.nextLine();
+        while (input.isEmpty()) {
+            System.out.println("Please Input a Operator");
+            input = scanner.nextLine();
+        }
+        input = input.toLowerCase();
+
+        if (input.charAt(0) == ('a')) {
+            return new Addition(num1, num2);
+        } else if (input.charAt(0) == ('s')) {
+            return new Subtraction(num1, num2);
+        } else if (input.charAt(0) == ('m')) {
+            return new Multiplication(num1, num2);
+        } else {
+            return new Division(num1, num2);
+        }
+
+    }
+
+    public static void askQuestion(Scanner scanner, Operator operator, int num1, int num2) {
+        int answer = operator.answer();
+
+        if (operator instanceof Division) {
+            answer = num1;
+            num1 = num1 * num2;
+        }
+
+        System.out.println("What is " + num1 + " " + operator.toString() + " " + num2 + "?");
+
+        while (!scanner.hasNextInt()) {
+            System.out.println("Please Input a Integer");
+            scanner.next();
+        }
+
+        int answerInput = scanner.nextInt();
+
+        if (answerInput == answer) {
+            System.out.println("Correct!");
+        } else {
+            System.out.println("Incorrect!");
+            System.out.println("Answer is " + answer);
+        }
+
     }
 }
